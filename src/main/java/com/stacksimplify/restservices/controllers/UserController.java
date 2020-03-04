@@ -10,6 +10,7 @@ import javax.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -30,21 +31,27 @@ import com.stacksimplify.restservices.exceptions.UserNotFoundException;
 import com.stacksimplify.restservices.exceptions.UsernameNotFoundException;
 import com.stacksimplify.restservices.services.UserService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
 @RestController
 @Validated
 @RequestMapping("/users")
+@Api(tags = "User Management RESTful Services", value = "UserController", description = "Controller for User Management Service")
 public class UserController {
 
 	@Autowired
 	private UserService userService;
 	
-	@GetMapping
+	@GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<User> getAllUsers(){
 		return userService.getAllUsers();
 	}
 	
 	@PostMapping
-	public ResponseEntity<Void> createUser(@Valid @RequestBody User user, ServletUriComponentsBuilder builder) {
+	@ApiOperation(value = "Create a new user")
+	public ResponseEntity<Void> createUser(@ApiParam("User information for a new user to be created.") @Valid @RequestBody User user, ServletUriComponentsBuilder builder) {
 		try{
 			user=userService.createUser(user);
 			HttpHeaders headers=new HttpHeaders();
@@ -59,10 +66,11 @@ public class UserController {
 		}
 	}
 	@GetMapping("/{id}")
-	public Optional<User> getUserById(@PathVariable(name = "id") @Min(1) Long id){
+	public User getUserById(@PathVariable(name = "id") @Min(1) Long id){
 		try {
-			return userService.getUserById(id);
-						
+			 return (userService.getUserById(id)).get();
+			
+			
 		}catch(UserNotFoundException ex) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, ex.getMessage());
 		}

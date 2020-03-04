@@ -19,23 +19,31 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonView;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 @Entity
 @Table(name = "user")
 //@JsonIgnoreProperties({"firstname","lastname"})
 //@JsonFilter(value = "userFilter")
+@ApiModel(description = "This model is to create a user")
 public class User extends ResourceSupport{
 	
 	@Id
 	@GeneratedValue
 	@JsonView(Views.External.class)
+	@ApiModelProperty(notes = "userid - Unique identifier of user", required = true, position = 1)
 	private Long userid;
+	@Size(min=2, max=50)
 	@NotEmpty(message="Username is mandatory field, please provide username")
 	@Column(name="USER_NAME", length=50, nullable=false, unique=true)
 	@JsonView(Views.External.class)
+	@ApiModelProperty(notes = "username of user", required = false, position = 2)
 	private String username;
-	@Size(min=2, message="FirstName should have atleast 2 characters")
+	@Size(min=2, max=50,  message="FirstName should have atleast 2 characters")
 	@Column(name="FIRST_NAME",length=50, nullable=false )
 	@JsonView(Views.External.class)
+	@ApiModelProperty(notes = "First name of the User.", example = "Kalyan", required = false, position = 3)
 	private String firstname;
 	@Column(name="LAST_NAME",length=50, nullable=false )
 	@JsonView(Views.External.class)
@@ -49,6 +57,7 @@ public class User extends ResourceSupport{
 	@Column(name="SSN", length=50, nullable=false, unique=true)
 	//@JsonIgnore
 	@JsonView(Views.Internal.class)
+	@ApiModelProperty(notes = "SSN of the User.", example = "SSN1010", required = true, position = 4)
 	private String ssn;
 	
 	@OneToMany(mappedBy = "user")
