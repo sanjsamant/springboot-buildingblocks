@@ -50,7 +50,7 @@ public class UserController {
 			HttpHeaders headers=new HttpHeaders();
 			URI uri= builder.fromCurrentContextPath()
 					.path("/{id}")
-					.buildAndExpand(user.getId())
+					.buildAndExpand(user.getUserid())
 					.toUri();
 			headers.setLocation(uri);
 			return new ResponseEntity<Void>(headers,HttpStatus.CREATED);
